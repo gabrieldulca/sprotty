@@ -14,19 +14,22 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import { Action, OpenAction } from 'sprotty-protocol/lib/actions';
-import { MouseListener } from '../../base/views/mouse-tool';
-import { SModelElement } from '../../base/model/smodel';
-import { findParentByFeature } from '../../base/model/smodel-utils';
-import { isOpenable } from './model';
+.sprotty-node {
+    fill: #cdc;
+    stroke: #152;
+    stroke-width: 2;
+}
 
+.sprotty-node.mouseover {
+    fill: #dfd;
+}
 
-export class OpenMouseListener extends MouseListener {
-    doubleClick(target: SModelElement, event: MouseEvent): (Action | Promise<Action>)[] {
-        const openableTarget = findParentByFeature(target, isOpenable);
-        if (openableTarget !== undefined) {
-            return [ OpenAction.create(openableTarget.id) ];
-        }
-        return [];
-    }
+.sprotty-node.selected {
+    stroke-width: 3;
+}
+
+.sprotty-edge {
+    fill: none;
+    stroke: #152;
+    stroke-width: 1;
 }

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 TypeFox and others.
+ * Copyright (c) 2017-2022 TypeFox and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -14,19 +14,18 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import { Action, OpenAction } from 'sprotty-protocol/lib/actions';
-import { MouseListener } from '../../base/views/mouse-tool';
-import { SModelElement } from '../../base/model/smodel';
-import { findParentByFeature } from '../../base/model/smodel-utils';
-import { isOpenable } from './model';
+import { IActionDispatcher, TYPES } from 'sprotty';
+import { RequestModelAction } from 'sprotty-protocol';
+import createContainer from './di.config';
 
+export default function runRandomGraphDistributed() {
+    const container = createContainer('sprotty');
 
-export class OpenMouseListener extends MouseListener {
-    doubleClick(target: SModelElement, event: MouseEvent): (Action | Promise<Action>)[] {
-        const openableTarget = findParentByFeature(target, isOpenable);
-        if (openableTarget !== undefined) {
-            return [ OpenAction.create(openableTarget.id) ];
-        }
-        return [];
-    }
+    const actionDispatcher = container.get<IActionDispatcher>(TYPES.IActionDispatcher);
+    actionDispatcher.request(RequestModelAction.create()).then(response => {
+        actionDispatcher.dispatch(response);
+    }, err => {
+        console.error(err);
+        document.getElementById('sprotty')!.innerText = String(err);
+    });
 }
